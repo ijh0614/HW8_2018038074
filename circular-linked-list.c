@@ -178,6 +178,18 @@ void printList(listNode* h) {//연결리스트의 노드 출력 함수
  * list에 key에 대한 노드하나를 추가
  */
 int insertLast(listNode* h, int key) {
+	if(h->rlink == h){//전처리. 저장되어있는 노드가 없을 경우
+		insertFirst(h, key);
+		return 0;
+	}
+
+	listNode* node = (listNode*)malloc(sizeof(listNode));
+
+	node->key = key;
+	node->rlink = h;//맨 끝이므로 h의 주소가 rlink이다
+	node->llink = h->llink;//맨 끝의 노드의 주소를 node의 llink에 넣어준다
+	h->llink->rlink = node;
+	h->llink = node;//양쪽 노드의 링크가 node를 가르키도록 한다.
 
 	return 1;
 }
@@ -187,7 +199,17 @@ int insertLast(listNode* h, int key) {
  * list의 마지막 노드 삭제
  */
 int deleteLast(listNode* h) {
+	if(h->rlink == h){//노드 삭제 전처리
+		printf("There is no node to delete.\n\n");
+		return 0;
+	}
 
+	listNode* del_node = h->llink;//지울 노드 주소 저장
+	
+	h->llink = del_node->llink;//삭제하는 양 옆 노드의 링크 변환
+	del_node->llink->rlink = h;//노드가 하나만 존재해도 성립
+
+	free(del_node);//노드 해제
 
 	return 1;
 }
@@ -201,20 +223,12 @@ int insertFirst(listNode* h, int key) {
 	listNode* r_node;//삽입할 위치의 오른쪽 노드
 
 	node->key = key;//값 저장
-	r_node = h->rlink;
+	r_node = h->rlink;//아무 노드도 없을 때는 head의 주소가 들어감
 
-	if(r_node = h){//헤드노드 외에 아무런 노드도 없을 때
-		node->rlink = h;//노드의 끝의 표현은 헤드노드를 가르키는 것이다.
-		node->llink = h;
-		h->rlink = node;//첫 노드를 가르킴
-		h->llink = node;//마지막 노드를 가르킴
-	}
-
-	node->rlink = h->rlink;
+	node->rlink = h->rlink;//헤드 노드만 있을때도 성립함
 	node->llink = h;//첫 노드의 의미
 	h->rlink = node;
-	r_node->llink = node;//두번째가 된 노드가 가르키도록
-
+	r_node->llink = node;//두번째가 된 노드가 가르키도록 or 헤드노드만 있을때는 헤드노드가 노드를 가르키도록
 
 	return 1;
 }
@@ -223,10 +237,18 @@ int insertFirst(listNode* h, int key) {
  * list의 첫번째 노드 삭제
  */
 int deleteFirst(listNode* h) {
+	if(h->rlink == h){//노드 삭제 전처리
+		printf("There is no node to delete.\n\n");
+		return 0;
+	}
+	
+	listNode* del_node;
+	del_node = h->rlink;
 
-
+	h->rlink = del_node->rlink;//노드가 하나만 있어도 성립하는 코드.
+	del_node->rlink->llink = h;//두번째 노드의 왼쪽 링크가 헤드 노드를 가르켜야 함
+	free(del_node);
 	return 1;
-
 }
 
 
@@ -254,6 +276,10 @@ int insertNode(listNode* h, int key) {
  * list에서 key에 대한 노드 삭제
  */
 int deleteNode(listNode* h, int key) {
+	if(h->rlink == h){//노드 삭제 전처리
+		printf("There is no node to delete.\n\n");
+		return 0;
+	}
 
 	return 0;
 }
