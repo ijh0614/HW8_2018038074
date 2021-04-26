@@ -123,10 +123,9 @@ int initialize(listNode** h) {
 /* 메모리 해제 */
 int freeList(listNode* h){
 	listNode* p = h->rlink;//첫번째 노드의 주소
-	listNode* next_node = NULL;//다음 노드 임시저장
 
-	while(next_node != h){//헤드의 주소가 나올 때 까지
-		next_node = p->rlink;//다음 노드의 주소 임시저장
+	while(p != h){//헤드의 주소가 나올 때 까지
+		p = p->rlink;//다음 노드의 주소 임시저장
 		free(p);
 	}
 	//마지막에 헤드노드 해제
@@ -257,7 +256,6 @@ int deleteFirst(listNode* h) {
  */
 int invertList(listNode* h) {
 
-
 	return 0;
 }
 
@@ -267,7 +265,31 @@ int invertList(listNode* h) {
  *  리스트를 검색하여, 입력받은 key보다 큰값이 나오는 노드 바로 앞에 삽입 
  **/
 int insertNode(listNode* h, int key) {
+	if(h->rlink == h){//전처리. 저장되어있는 노드가 없을 경우
+		insertFirst(h, key);
+		return 0;
+	}
+	
+	listNode* node = (listNode*)malloc(sizeof(listNode));
+	listNode* next_node = h->rlink;
 
+	node->key = key;
+
+	while(next_node != h){
+		if(next_node->key >= key){//입력한 key보다 큰 값을 저장하고 있는 노드를 찾으면
+			node->llink = next_node->llink;
+			node->rlink = next_node;//노드의 링크 할당
+			next_node->llink->rlink = node;
+			next_node->llink = node;
+			return 0;
+		}
+		next_node = next_node->rlink;//다음 노드로 이동
+	}
+//입력한 key보다 큰 값을 저장하고 있는 노드가 없으면
+	node->rlink = h;
+	node->llink = h->llink;
+	h->llink->rlink = node;//기존에 마지막 노드였던 노드가 새로운 노드를 가르킨다.
+	h->llink = node;//헤더노드의 llink는 끝을 가르킨다.
 	return 0;
 }
 
@@ -281,5 +303,19 @@ int deleteNode(listNode* h, int key) {
 		return 0;
 	}
 
+	listNode* del_node = h->rlink;
+
+	while(del_node != h){
+		if(del_node->key == key){
+			del_node->llink->rlink = del_node->rlink;
+			del_node->rlink->llink = del_node->llink;
+
+			free(del_node);
+			return 0;
+		}
+		del_node = del_node->rlink;
+	}
+
+	printf("There is no node to delete.\n\n");
 	return 0;
 }
