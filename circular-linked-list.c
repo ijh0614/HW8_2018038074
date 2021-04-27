@@ -257,7 +257,7 @@ int deleteFirst(listNode* h) {
  */
 int invertList(listNode* h) {
 
-	listNode* temp_node;
+	listNode* temp_node = h->rlink;
 	listNode* next_node = temp_node->rlink;
 
 	//전처리기
