@@ -256,6 +256,33 @@ int deleteFirst(listNode* h) {
  */
 int invertList(listNode* h) {
 
+	listNode* temp_node;
+	listNode* next_node = temp_node->rlink;
+
+	//전처리기
+	if(temp_node == h){//저장되어 있는 노드가 없거나
+		printf("\nPlease input two nodes.\n");
+		return 0;
+	}
+	else if(temp_node->rlink == h){//노드가 하나만 있는 경우
+		printf("\nAt least two nodes are required for the program to work.\n");
+		return 0;
+	}
+
+	temp_node = h->rlink;
+	h->rlink = h->llink;//헤드노드가 가르키는 시작을 끝으로 옮기기
+	h->llink = temp_node;//헤드 노드가 가르키는 끝을 시작으로 옮기기
+
+	while(temp_node != h){
+		next_node = temp_node->rlink;
+		
+		temp_node->rlink = temp_node->llink;//다음 노드 링크에 이전노드 주소 저장
+		temp_node->llink = next_node;//이전 노드 주소에 다음 노드 주소 저장
+
+		temp_node = next_node;//다음 노드로 이동
+	}
+
+
 	return 0;
 }
 

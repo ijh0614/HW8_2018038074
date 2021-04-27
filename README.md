@@ -9,7 +9,7 @@ Doubly Circular Linked List
 - [O] int deleteLast(listNode* h);
 - [O] int insertNode(listNode* h, int key);
 - [O] int deleteNode(listNode* h, int key);
-- [] int invertList(listNode* h);
+- [O] int invertList(listNode* h);
 
 
 
