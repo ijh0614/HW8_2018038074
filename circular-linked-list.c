@@ -21,16 +21,17 @@ typedef struct Node {
 } listNode;
 
 /* 함수 리스트 */
-int initialize(listNode** h);
-int freeList(listNode* h);
+//기본적으로 이중연결리스트와 유사. 양 끝이 헤드노드를 가르켜야학고, 헤드 노드가 양끝을 가르켜야한다는 것 주의.
+int initialize(listNode** h);//초기화. 헤더노드를 만들어준다. 여태까지와 다르게 헤더 노드의 타입이 listNode이다.
+int freeList(listNode* h);//헤드노드가 나올때까지 반복해서 해제 후 헤드노드까지 해제
 int insertLast(listNode* h, int key);
 int deleteLast(listNode* h);
 int insertFirst(listNode* h, int key);
 int deleteFirst(listNode* h);
 int invertList(listNode* h);
 
-int insertNode(listNode* h, int key);
-int deleteNode(listNode* h, int key);
+int insertNode(listNode* h, int key);//값의 크기 비교
+int deleteNode(listNode* h, int key);//값을 찾아서 삭제
 
 void printList(listNode* h);
 
@@ -38,9 +39,9 @@ void printList(listNode* h);
 
 int main()
 {
-	char command;
-	int key;
-	listNode* headnode=NULL;
+	char command;//메뉴 선택
+	int key;//사용자로부터 값 입력받음
+	listNode* headnode=NULL;//listNode로 헤드노드를 선언했기 때문에 다른 노드들이 헤드 노드를 가르킬 수 있다.
 
 	do{
 		printf("--------[2018038074]-----------------------[임종훈]-------------\n");
@@ -93,7 +94,7 @@ int main()
 			invertList(headnode);
 			break;
 		case 'q': case 'Q':
-			freeList(headnode);
+			freeList(headnode);//해제하고 종료
 			break;
 		default:
 			printf("\n       >>>>>   Concentration!!   <<<<<     \n");
@@ -182,7 +183,7 @@ int insertLast(listNode* h, int key) {
 		return 0;
 	}
 
-	listNode* node = (listNode*)malloc(sizeof(listNode));
+	listNode* node = (listNode*)malloc(sizeof(listNode));//노드 생성
 
 	node->key = key;
 	node->rlink = h;//맨 끝이므로 h의 주소가 rlink이다
@@ -241,7 +242,7 @@ int deleteFirst(listNode* h) {
 		return 0;
 	}
 	
-	listNode* del_node;
+	listNode* del_node;//지워줄 노드 임시저장
 	del_node = h->rlink;
 
 	h->rlink = del_node->rlink;//노드가 하나만 있어도 성립하는 코드.
@@ -273,7 +274,7 @@ int invertList(listNode* h) {
 	h->rlink = h->llink;//헤드노드가 가르키는 시작을 끝으로 옮기기
 	h->llink = temp_node;//헤드 노드가 가르키는 끝을 시작으로 옮기기
 
-	while(temp_node != h){
+	while(temp_node != h){//다음 노드가 헤더라는 건 끝까지 돌았다는 뜻
 		next_node = temp_node->rlink;
 		
 		temp_node->rlink = temp_node->llink;//다음 노드 링크에 이전노드 주소 저장
@@ -297,7 +298,7 @@ int insertNode(listNode* h, int key) {
 		return 0;
 	}
 	
-	listNode* node = (listNode*)malloc(sizeof(listNode));
+	listNode* node = (listNode*)malloc(sizeof(listNode));//새 노드 동적할당
 	listNode* next_node = h->rlink;
 
 	node->key = key;
@@ -307,7 +308,7 @@ int insertNode(listNode* h, int key) {
 			node->llink = next_node->llink;
 			node->rlink = next_node;//노드의 링크 할당
 			next_node->llink->rlink = node;
-			next_node->llink = node;
+			next_node->llink = node;//양쪽에 있는 노드가 새로운 노드를 가르키도록
 			return 0;
 		}
 		next_node = next_node->rlink;//다음 노드로 이동
@@ -330,19 +331,19 @@ int deleteNode(listNode* h, int key) {
 		return 0;
 	}
 
-	listNode* del_node = h->rlink;
+	listNode* del_node = h->rlink;//지울 노드 저장
 
-	while(del_node != h){
-		if(del_node->key == key){
+	while(del_node != h){//못 찾고 끝까지 다 돌면 탈출
+		if(del_node->key == key){//만약에 key값을 찾으면
 			del_node->llink->rlink = del_node->rlink;
-			del_node->rlink->llink = del_node->llink;
+			del_node->rlink->llink = del_node->llink;//지울 노드를 건너 뛰게하고
 
-			free(del_node);
+			free(del_node);//노드 해제
 			return 0;
 		}
 		del_node = del_node->rlink;
 	}
 
-	printf("There is no node to delete.\n\n");
+	printf("There is no node to delete.\n\n");//지울 노드를 찾을 수 없다.
 	return 0;
 }
